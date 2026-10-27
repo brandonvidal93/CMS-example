@@ -18,6 +18,17 @@ import type { ContentType } from './blocks/types.js';
 export class PublicController {
   constructor(private readonly content: ContentService) {}
 
+  // GET /api — un pequeño índice, para saber qué hay al abrir la API en el navegador
+  @Get()
+  index() {
+    return {
+      name: 'Mini CMS API',
+      public: ['GET /api/nav', 'GET /api/:type', 'GET /api/:type/:slug', 'GET /api/:type/:slug/markdown'],
+      admin: ['GET /api/admin/:type', 'GET /api/admin/:type/:id', 'POST /api/admin/:type', 'PUT /api/admin/:type/:id'],
+      types: ['articles', 'pages'],
+    };
+  }
+
   // Va antes que ':type' en el archivo: si no, "nav" se tomaría como un tipo de contenido
   @Get('nav')
   nav() {

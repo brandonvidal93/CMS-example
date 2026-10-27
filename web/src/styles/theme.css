@@ -2,14 +2,14 @@
    Global a propósito: el contenido viene de la base de datos y se pinta con varios
    componentes, pero un tema debe aplicarse a todo por igual. */
 
-.site, app-public-layout { display: block; font-family: Georgia, serif; color: #b33b3b; line-height: 1.7; }
+.site, app-public-layout { display: block; font-family: Georgia, serif; color: #1d1d1d; line-height: 1.7; }
 .wrap, .section-inner { max-width: 1040px; margin: 0 auto; padding: 0 16px; }
 /* Artículos y portada: columna de lectura, alineada a la izquierda con la cabecera */
 .narrow { max-width: 680px; }
 
 .site-header { padding: 24px 0; }
 .site-header .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: baseline; }
-.site-header a { color: #6e1717; text-decoration: none; }
+.site-header a { color: #222222; text-decoration: none; }
 .site-header .brand { font-weight: bold; }
 .site-header nav { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 15px; }
 .site-footer { margin-top: 48px; padding: 24px 0; color: #999; font-size: 13px; }
