@@ -20,7 +20,7 @@ import { type AccordionVM, emptyAccordionItem, INNER_TYPES, move, removeAt } fro
           <div class="acc-head">
             <button type="button" title="Plegar / desplegar" [attr.aria-expanded]="!it.collapsed()"
                     (click)="it.collapsed.update(c => !c)">{{ it.collapsed() ? '▸' : '▾' }}</button>
-            <input class="acc-title" placeholder="Título del elemento (la pregunta)"
+            <input class="acc-title" placeholder="Título del elemento"
                    [id]="'title-' + it.key" [value]="it.title()"
                    (input)="it.title.set(val($event))" (keydown.enter)="focusFirst($event, i)" />
             <button type="button" title="Subir elemento" (click)="acc.items.update(l => move(l, i, -1))">↑</button>
