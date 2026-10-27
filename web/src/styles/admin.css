@@ -1,0 +1,70 @@
+/* admin.css — Estilos del panel.
+   Globales (y no en cada componente) porque el contenido de los contenteditable
+   lo crea el navegador (<b>, <ul>...), y los estilos encapsulados de Angular no
+   llegan a elementos que Angular no creó. Todo va bajo .admin para no afectar al sitio. */
+
+app-admin-layout { display: block; font-family: system-ui, sans-serif; max-width: 880px; margin: 0 auto; padding: 16px; color: #222; }
+app-admin-layout.wide { max-width: 1240px; }
+.admin-header { display: flex; justify-content: space-between; padding: 8px 0 16px; border-bottom: 1px solid #eee; margin-bottom: 16px; }
+.admin a { color: #2856a3; }
+.admin table { width: 100%; border-collapse: collapse; }
+.admin td, .admin th { text-align: left; padding: 8px; border-bottom: 1px solid #ddd; }
+.admin .badge { padding: 2px 8px; border-radius: 10px; font-size: 12px; }
+.admin .badge.draft { background: #eee; } .admin .badge.published { background: #d4f5d4; }
+.admin .errors { color: #b00; background: #fdeeee; padding: 8px 12px 8px 28px; border-radius: 6px; }
+.admin p.errors { padding-left: 12px; }
+.admin .ok { color: #070; }
+.admin .dirty { color: #b26b00; }
+
+.admin input.title { width: 100%; font-size: 22px; padding: 8px; }
+.admin .toolbar { position: sticky; top: 0; background: #fff; padding: 8px 0; z-index: 2; border-bottom: 1px solid #eee; }
+.admin .toolbar button { margin-right: 4px; }
+.admin .actions { margin: 16px 0; }
+.admin .json-preview pre { white-space: pre-wrap; background: #f5f5f5; padding: 8px; font-size: 12px; max-height: 400px; overflow: auto; }
+
+/* Bloques */
+.admin .block { border: 1px solid #ddd; border-radius: 6px; margin: 10px 0; background: #fff; }
+.admin .block:focus-within { border-color: #7a9cc6; }
+.admin .block-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 4px 8px; background: #f7f7f7; border-bottom: 1px solid #eee; font-size: 12px; }
+.admin .block-bar .spacer { flex: 1; }
+.admin .block-bar button { border: none; background: none; cursor: pointer; padding: 2px 6px; }
+.admin .block-label { font-weight: 600; color: #555; }
+.admin .rich { display: block; padding: 10px 12px; min-height: 1.5em; outline: none; }
+.admin .rich ul, .admin .rich ol { margin: 0; }
+.admin .block[data-type=heading] .rich { font-size: 22px; font-weight: 600; }
+.admin .block[data-type=quote] .rich { font-style: italic; border-left: 3px solid #ccc; margin: 8px 12px; }
+.admin .block[data-type=callout] .rich { background: #eef4fb; margin: 8px; border-radius: 4px; }
+.admin .block[data-type=callout]:has(option[value=warning]:checked) .rich { background: #fdf3e1; }
+.admin .image-fields { display: grid; gap: 6px; padding: 10px 12px; }
+.admin .image-fields input { padding: 6px; }
+.admin .image-preview { max-width: 240px; max-height: 160px; }
+.admin .add-bar, .admin .add-section { font-size: 13px; color: #777; margin: 6px 0; }
+.admin .add-bar button, .admin .add-section button { margin: 2px; }
+.admin .add-section button { font-family: ui-monospace, monospace; }
+
+/* Acordeón */
+.admin .acc-items { display: grid; gap: 8px; padding: 8px; }
+.admin .acc-item { border: 1px solid #e3e3e3; border-radius: 6px; background: #fcfcfc; }
+.admin .acc-head { display: flex; align-items: center; gap: 4px; padding: 6px; border-bottom: 1px solid #eee; }
+.admin .acc-item.collapsed .acc-head { border-bottom: none; }
+.admin .acc-head button { border: none; background: none; cursor: pointer; padding: 2px 6px; }
+.admin .acc-title { flex: 1; font-weight: 600; font-size: 15px; padding: 6px; border: 1px solid transparent; background: transparent; }
+.admin .acc-title:focus { border-color: #7a9cc6; background: #fff; outline: none; }
+.admin .acc-content { padding: 0 10px 8px 24px; }
+.admin .acc-add-item { margin: 0 8px 8px; }
+
+/* Secciones y columnas (páginas) */
+.admin .section-ed { border: 2px solid #c9d6e6; border-radius: 8px; margin: 16px 0; background: #f6f9fc; }
+.admin .section-ed[data-background=light] { background: #fbf3f3; border-color: #e6c9c9; }
+.admin .section-ed[data-background=accent] { background: #f3e3e3; border-color: #6e1717; }
+.admin .section-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 6px 10px; font-size: 13px; border-bottom: 1px solid #c9d6e6; }
+.admin .section-bar .spacer { flex: 1; }
+.admin .section-bar > button { border: none; background: none; cursor: pointer; padding: 2px 6px; }
+.admin .section-label { font-weight: 700; color: #34506e; }
+.admin .layout-pick { display: inline-flex; gap: 4px; }
+.admin .layout-pick button { font-family: ui-monospace, monospace; font-size: 12px; padding: 2px 6px; border: 1px solid #b5c3d4; background: #fff; border-radius: 4px; cursor: pointer; }
+.admin .layout-pick button[aria-pressed=true] { background: #34506e; color: #fff; border-color: #34506e; }
+.admin .columns { display: grid; gap: 10px; padding: 10px; }
+.admin .column-ed { border: 1px dashed #b5c3d4; border-radius: 6px; padding: 4px 8px 8px; background: rgba(255,255,255,.6); min-width: 0; }
+.admin .column-label { font-size: 11px; color: #7a8ea5; text-transform: uppercase; letter-spacing: .04em; }
+.admin .column-empty { color: #aab; font-size: 13px; text-align: center; padding: 12px 0; margin: 0; }

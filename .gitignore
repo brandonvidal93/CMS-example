@@ -1,5 +1,11 @@
-# Dependencias: se reinstalan con "npm install" (y better-sqlite3 se compila para cada sistema)
+# Dependencias: se reinstalan con "npm run install:all"
 node_modules/
+
+# Compilados y cachés
+dist/
+.angular/
+*.tsbuildinfo
+coverage/
 
 # Base de datos local y sus respaldos: es contenido, no código
 *.db
@@ -7,7 +13,7 @@ node_modules/
 *.db-wal
 *.db-shm
 
-# Variables de entorno (por si en el futuro añades claves o contraseñas)
+# Variables de entorno (claves, contraseñas)
 .env
 .env.*
 
@@ -15,9 +21,9 @@ node_modules/
 *.log
 npm-debug.log*
 
-# Archivos del sistema y de editores
+# Sistema y editores (web/.vscode sí se sube: trae la configuración recomendada de Angular)
 .DS_Store
 Thumbs.db
-.vscode/
 .idea/
 .qodo/
+/.vscode/
