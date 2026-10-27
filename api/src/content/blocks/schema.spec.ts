@@ -75,3 +75,38 @@ describe('texto y markdown', () => {
     expect(toMarkdown('T', r.doc)).toBe('# T\n\nUno\n\nDos\n');
   });
 });
+
+describe('formato tachado (strike)', () => {
+  it('se acepta y se exporta a Markdown como ~~texto~~', () => {
+    const r = validateArticle({ blocks: [{ type: 'paragraph', content: [{ text: 'precio viejo', marks: ['strike', 'bold'] }] }] });
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.doc.blocks[0]).toMatchObject({ content: [{ text: 'precio viejo', marks: ['bold', 'strike'] }] });
+    expect(toMarkdown('T', r.doc)).toBe('# T\n\n**~~precio viejo~~**\n');
+  });
+
+  it('escapa ~ en el texto normal para que no se convierta en tachado', () => {
+    const r = validateArticle({ blocks: [{ type: 'paragraph', content: [{ text: 'unas ~~10 personas', marks: [] }] }] });
+    if (!r.ok) throw new Error('debería ser válido');
+    expect(toMarkdown('T', r.doc)).toBe('# T\n\nunas \\~\\~10 personas\n');
+  });
+});
+
+describe('resaltado y código en línea', () => {
+  it('se aceptan y se exportan a Markdown', () => {
+    const r = validateArticle({ blocks: [{ type: 'paragraph', content: [
+      { text: 'Ejecuta ', marks: [] },
+      { text: 'npm install', marks: ['code'] },
+      { text: ' y ', marks: [] },
+      { text: 'no lo olvides', marks: ['highlight'] },
+    ] }] });
+    if (!r.ok) throw new Error(r.errors.join());
+    expect(toMarkdown('T', r.doc)).toBe('# T\n\nEjecuta `npm install` y ==no lo olvides==\n');
+  });
+
+  it('el código no se escapa y admite comillas invertidas', () => {
+    const r = validateArticle({ blocks: [{ type: 'paragraph', content: [{ text: 'a*b `c`', marks: ['code'] }] }] });
+    if (!r.ok) throw new Error(r.errors.join());
+    expect(toMarkdown('T', r.doc)).toBe('# T\n\n`` a*b `c` ``\n');
+  });
+});

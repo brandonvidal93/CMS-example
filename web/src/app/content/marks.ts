@@ -19,13 +19,19 @@ export interface MarkDef {
   reads: string[];      // etiquetas que el editor reconoce como este formato
   label: string;        // texto del botón en la barra
   title: string;        // descripción del botón (tooltip y accesibilidad)
-  command: string;      // orden de document.execCommand que lo aplica en el editor
+  // Orden de document.execCommand que lo aplica en el editor. Si el navegador no
+  // tiene una (resaltado, código), se deja vacío y el editor envuelve la selección
+  // con la etiqueta "tag" por su cuenta (ver wrapSelection en rich-text.ts).
+  command?: string;
   buttonClass?: string; // aspecto del botón (clases de Tailwind)
 }
 
 export const MARKS: Record<Mark, MarkDef> = {
   bold: { tag: 'strong', reads: ['b', 'strong'], label: 'N', title: 'Negrita', command: 'bold', buttonClass: 'font-bold' },
   italic: { tag: 'em', reads: ['i', 'em'], label: 'K', title: 'Cursiva', command: 'italic', buttonClass: 'italic' },
+  strike: { tag: 's', reads: ['s', 'strike', 'del'], label: 'S', title: 'Tachado', command: 'strikeThrough', buttonClass: 'line-through' },
+  highlight: { tag: 'mark', reads: ['mark'], label: 'Resaltar', title: 'Resaltado', buttonClass: 'bg-yellow-100' },
+  code: { tag: 'code', reads: ['code'], label: '</>', title: 'Código en línea', buttonClass: 'font-mono text-xs' },
 };
 
 // El orden del registro es el orden de anidado: el primero queda por fuera.

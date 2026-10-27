@@ -7,10 +7,11 @@ import { Component, computed, inject, input, OnInit, signal } from '@angular/cor
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router, RouterLink } from '@angular/router';
 import { AdminApi, type ContentItem } from '../../core/api';
-import type { ArticleDoc, ContentType, PageDoc, Status } from '../../content/types';
+import type { ArticleDoc, ContentType, Mark, PageDoc, Status } from '../../content/types';
 import { BlockListEditor } from './block-list-editor';
 import { SectionsEditor } from './sections-editor';
 import { EditorState } from './editor-state';
+import { wrapSelection } from './rich-text';
 import { MARK_ORDER, MARKS } from '../../content/marks';
 import {
   ALL_TYPES, articleToDoc, blockFromDoc, type BlockVM, emptyBlock, emptySection, pageToDoc,
@@ -46,7 +47,7 @@ import {
         <!-- Un botón por cada formato del registro (content/marks.ts) -->
         @for (m of markOrder; track m) {
           <button type="button" class="btn" [class]="marks[m].buttonClass ?? ''" [title]="marks[m].title" [attr.aria-label]="marks[m].title"
-                  (mousedown)="$event.preventDefault()" (click)="format(marks[m].command)">{{ marks[m].label }}</button>
+                  (mousedown)="$event.preventDefault()" (click)="applyMark(m)">{{ marks[m].label }}</button>
         }
         <button type="button" class="btn" (mousedown)="$event.preventDefault()" (click)="link()">Enlace</button>
         <button type="button" class="btn" (mousedown)="$event.preventDefault()" (click)="format('unlink')">Quitar enlace</button>
@@ -189,6 +190,14 @@ export class EditorPage implements OnInit {
   // La barra de formato actúa sobre el texto seleccionado en cualquier bloque.
   // execCommand dispara el evento "input" del contenteditable, y RichText
   // actualiza el modelo como si se hubiera escrito.
+  // Si el navegador sabe aplicar el formato (negrita, cursiva, tachado), lo usamos.
+  // Si no (resaltado, código), lo envolvemos nosotros con wrapSelection.
+  applyMark(m: Mark) {
+    const def = this.marks[m];
+    if (def.command) document.execCommand(def.command);
+    else wrapSelection(def.tag, def.reads);
+  }
+
   format(command: string) {
     document.execCommand(command);
   }

@@ -9,7 +9,7 @@ import { randomBytes } from 'node:crypto';
 import type { AccordionItem, ArticleDoc, Block, BlockType, Mark, Span } from './types.js';
 
 export const LIMITS = { blocks: 500, listItems: 200, textPerSpan: 20000, url: 2000, shortText: 300, accordionItems: 30 };
-const ALLOWED_MARKS: Mark[] = ['bold', 'italic'];
+const ALLOWED_MARKS: Mark[] = ['bold', 'italic', 'strike', 'highlight', 'code'];
 const CONTAINER_TYPES: BlockType[] = ['accordion'];
 
 export type ErrFn = (msg: string) => void;

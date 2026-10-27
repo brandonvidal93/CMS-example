@@ -6,7 +6,7 @@
 // Este archivo es una COPIA de api/src/content/blocks/types.ts.
 // Si cambias uno, cambia el otro (con npm workspaces podrían compartir un paquete).
 
-export type Mark = 'bold' | 'italic';
+export type Mark = 'bold' | 'italic' | 'strike' | 'highlight' | 'code';
 
 export interface Span {
   text: string;

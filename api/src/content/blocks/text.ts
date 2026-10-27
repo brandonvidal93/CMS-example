@@ -28,12 +28,19 @@ export function makeExcerpt(doc: ArticleDoc | PageDoc, max = 160): string {
 }
 
 // ── Markdown ──
-const mdEscape = (s: string) => s.replace(/([\\`*_[\]#<>])/g, '\\$1');
+const mdEscape = (s: string) => s.replace(/([\\`*_[\]#<>~=])/g, '\\$1');
 
 function span(s: Span): string {
   const [, lead, core, trail] = s.text.match(/^(\s*)([\s\S]*?)(\s*)$/)!;
   if (!core) return s.text;
-  let text = mdEscape(core).replace(/\n/g, '  \n');
+  // El código en línea va SIN escapar: dentro de `...` Markdown no interpreta nada.
+  // Si el texto ya contiene una comilla invertida, se usan dos para delimitarlo.
+  let text = s.marks.includes('code')
+    ? (core.includes('`') ? `\`\` ${core} \`\`` : `\`${core}\``)
+    : mdEscape(core).replace(/\n/g, '  \n');
+  // ==texto== no es Markdown estándar, pero lo entienden muchos editores (Obsidian, Typora...)
+  if (s.marks.includes('highlight')) text = `==${text}==`;
+  if (s.marks.includes('strike')) text = `~~${text}~~`;
   if (s.marks.includes('italic')) text = `*${text}*`;
   if (s.marks.includes('bold')) text = `**${text}**`;
   if (s.href) text = `[${text}](${s.href})`;
