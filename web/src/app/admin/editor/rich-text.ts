@@ -12,6 +12,8 @@
 
 import { Component, effect, ElementRef, inject, input, output, untracked, type WritableSignal } from '@angular/core';
 import type { Mark, Span } from '../../content/types';
+import { MARK_BY_TAG } from '../../content/marks';
+import { spansToHtml } from '../../content/inline-html';
 import { EditorState } from './editor-state';
 
 @Component({
@@ -129,19 +131,10 @@ export class RichText {
   }
 }
 
-// ─── Conversión HTML <-> spans (igual que en editor.js) ───
-
-const esc = (s = '') => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-
-function spansToHtml(spans: Span[]): string {
-  return spans.map(s => {
-    let h = esc(s.text).replace(/\n/g, '<br>');
-    if (s.marks.includes('italic')) h = `<i>${h}</i>`;
-    if (s.marks.includes('bold')) h = `<b>${h}</b>`;
-    if (s.href) h = `<a href="${esc(s.href)}">${h}</a>`;
-    return h;
-  }).join('');
-}
+// ─── Conversión HTML <-> spans ───
+// spansToHtml (modelo -> HTML) viene de content/inline-html.ts: el editor pinta
+// igual que el sitio público. domToSpans (HTML -> modelo) está aquí abajo.
+// Las dos usan el registro de formatos (content/marks.ts).
 
 // <b>Hola <i>mundo</i></b>  ->  [{text:"Hola ",marks:["bold"]}, {text:"mundo",marks:["bold","italic"]}]
 function domToSpans(root: Element): Span[] {
@@ -156,10 +149,11 @@ function domToSpans(root: Element): Span[] {
       const tag = child.tagName.toLowerCase();
       if (tag === 'br') { push('\n', marks, href); continue; }
       if (['div', 'p', 'li'].includes(tag) && out.length) push('\n', marks, href);
+      // ¿Esta etiqueta es un formato conocido? (b/strong -> bold, i/em -> italic...)
+      // Cualquier otra (span, font, u...) se ignora: solo conservamos su texto
       const m = new Set(marks);
-      if (tag === 'b' || tag === 'strong') m.add('bold');
-      if (tag === 'i' || tag === 'em') m.add('italic');
-      // cualquier otra etiqueta (span, font, u...) se ignora: solo conservamos su texto
+      const mark = MARK_BY_TAG[tag];
+      if (mark) m.add(mark);
       walk(child, m, tag === 'a' ? child.getAttribute('href') : href);
     }
   })(root, new Set(), null);

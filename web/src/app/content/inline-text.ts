@@ -1,24 +1,22 @@
-// inline-text.ts — Pinta una lista de spans: texto con negrita, cursiva y enlaces
+// inline-text.ts — Pinta una lista de spans: texto con formato y enlaces
 //
-// Es el equivalente de la función inline() de render-html.js, pero sin escapar
-// nada a mano: Angular escapa SIEMPRE el texto de {{ }}, y además revisa los
-// [href] (un "javascript:..." se convertiría en "unsafe:javascript:...").
-// Es una segunda capa de protección, además de la validación de la API.
-//
-// Ojo con los espacios: en las plantillas no hay espacios ni saltos alrededor de
-// {{ }}, porque Angular los convertiría en espacios visibles entre los spans.
+// El HTML lo genera spansToHtml() a partir del registro de formatos (marks.ts).
+// Es seguro meterlo con [innerHTML] por dos razones:
+//   1. spansToHtml escapa todo el texto: solo genera etiquetas que conocemos
+//   2. Angular, además, limpia (sanitiza) cualquier cosa que se pase a innerHTML:
+//      un <script> o un href="javascript:..." desaparecerían igualmente
+// Y antes de todo eso, la API ya validó el contenido. Tres capas.
 
-import { Component, input } from '@angular/core';
-import { NgTemplateOutlet } from '@angular/common';
+import { Component, computed, input } from '@angular/core';
+import { spansToHtml } from './inline-html';
 import type { Span } from './types';
 
 @Component({
   selector: 'app-inline',
-  imports: [NgTemplateOutlet],
-  template: `@for (s of spans(); track $index) {@if (s.href) {<a [href]="s.href"><ng-container [ngTemplateOutlet]="fmt" [ngTemplateOutletContext]="{ $implicit: s }" /></a>} @else {<ng-container [ngTemplateOutlet]="fmt" [ngTemplateOutletContext]="{ $implicit: s }" />}}
-<ng-template #fmt let-s>@if (s.marks.includes('bold') && s.marks.includes('italic')) {<strong><em><ng-container [ngTemplateOutlet]="txt" [ngTemplateOutletContext]="{ $implicit: s.text }" /></em></strong>} @else if (s.marks.includes('bold')) {<strong><ng-container [ngTemplateOutlet]="txt" [ngTemplateOutletContext]="{ $implicit: s.text }" /></strong>} @else if (s.marks.includes('italic')) {<em><ng-container [ngTemplateOutlet]="txt" [ngTemplateOutletContext]="{ $implicit: s.text }" /></em>} @else {<ng-container [ngTemplateOutlet]="txt" [ngTemplateOutletContext]="{ $implicit: s.text }" />}</ng-template>
-<ng-template #txt let-t>@for (line of t.split('\n'); track $index) {@if (!$first) {<br />}{{ line }}}</ng-template>`,
+  template: '',
+  host: { '[innerHTML]': 'html()' },
 })
 export class InlineText {
   readonly spans = input.required<Span[]>();
+  protected html = computed(() => spansToHtml(this.spans()));
 }

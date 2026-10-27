@@ -11,6 +11,7 @@ import type { ArticleDoc, ContentType, PageDoc, Status } from '../../content/typ
 import { BlockListEditor } from './block-list-editor';
 import { SectionsEditor } from './sections-editor';
 import { EditorState } from './editor-state';
+import { MARK_ORDER, MARKS } from '../../content/marks';
 import {
   ALL_TYPES, articleToDoc, blockFromDoc, type BlockVM, emptyBlock, emptySection, pageToDoc,
   sectionFromDoc, type SectionVM,
@@ -42,8 +43,11 @@ import {
       <!-- Barra fija arriba: formato a la izquierda, guardar a la derecha.
            mousedown.preventDefault: que el botón no le robe la selección al texto -->
       <div class="sticky top-0 z-10 -mx-4 mb-4 flex flex-wrap items-center gap-1 border-b border-slate-200 bg-slate-100/95 px-4 py-2 backdrop-blur">
-        <button type="button" class="btn font-bold" title="Negrita" (mousedown)="$event.preventDefault()" (click)="format('bold')">N</button>
-        <button type="button" class="btn italic" title="Cursiva" (mousedown)="$event.preventDefault()" (click)="format('italic')">K</button>
+        <!-- Un botón por cada formato del registro (content/marks.ts) -->
+        @for (m of markOrder; track m) {
+          <button type="button" class="btn" [class]="marks[m].buttonClass ?? ''" [title]="marks[m].title" [attr.aria-label]="marks[m].title"
+                  (mousedown)="$event.preventDefault()" (click)="format(marks[m].command)">{{ marks[m].label }}</button>
+        }
         <button type="button" class="btn" (mousedown)="$event.preventDefault()" (click)="link()">Enlace</button>
         <button type="button" class="btn" (mousedown)="$event.preventDefault()" (click)="format('unlink')">Quitar enlace</button>
         <span class="flex-1"></span>
@@ -100,6 +104,8 @@ export class EditorPage implements OnInit {
   private savedJson = signal('');
 
   protected allTypes = ALL_TYPES;
+  protected marks = MARKS;
+  protected markOrder = MARK_ORDER;
   protected isPage = computed(() => this.type() === 'pages');
   protected publicUrl = computed(() => (this.isPage() ? `/${this.slug()}` : `/blog/${this.slug()}`));
 
@@ -183,8 +189,8 @@ export class EditorPage implements OnInit {
   // La barra de formato actúa sobre el texto seleccionado en cualquier bloque.
   // execCommand dispara el evento "input" del contenteditable, y RichText
   // actualiza el modelo como si se hubiera escrito.
-  format(cmd: 'bold' | 'italic' | 'unlink') {
-    document.execCommand(cmd);
+  format(command: string) {
+    document.execCommand(command);
   }
 
   link() {
