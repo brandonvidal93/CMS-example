@@ -1,5 +1,85 @@
-/* styles.css — Base mínima compartida. El aspecto del sitio está en styles/theme.css
-   y el del panel en styles/admin.css. */
-*, *::before, *::after { box-sizing: border-box; }
-body { margin: 0; }
-img { max-width: 100%; height: auto; }
+/* styles.css — Tailwind 4 + los tokens del sitio
+ *
+ * En Tailwind 4 la configuración vive aquí, en CSS (ya no hay tailwind.config.js):
+ *   - @theme   define los "tokens": colores, fuentes... Cada uno genera utilidades.
+ *              Ej.: --color-brand-700 -> bg-brand-700, text-brand-700, border-brand-700
+ *   - @plugin  activa plugins (typography = la clase "prose" para el contenido)
+ *   - @utility crea clases propias reutilizables (btn, field...)
+ *
+ * Tailwind lee los .ts del proyecto y solo genera las clases que encuentra
+ * escritas COMPLETAS. Por eso las clases que dependen del contenido (layout,
+ * fondo, tono) están en mapas: ver content/styles-map.ts.
+ */
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --font-serif: Georgia, "Times New Roman", serif;
+
+  /* Texto (tus colores: #1d1d1d para el texto, #222222 para la cabecera) */
+  --color-ink: #1d1d1d;
+  --color-ink-soft: #222222;
+
+  /* Marca: el rojo del sitio en varios tonos */
+  --color-brand-50: #fbf3f3;
+  --color-brand-100: #f3e3e3;
+  --color-brand-200: #e6c9c9;
+  --color-brand-500: #b33b3b;
+  --color-brand-700: #6e1717;
+  --color-brand-900: #3f0b0b;
+}
+
+/* ── Contenido: "prose" con los colores de la marca ──
+   El plugin typography se personaliza con variables --tw-prose-*.
+   Uso: class="prose prose-brand" */
+@utility prose-brand {
+  --tw-prose-body: var(--color-ink);
+  --tw-prose-headings: var(--color-ink);
+  --tw-prose-bold: var(--color-ink);
+  --tw-prose-links: var(--color-brand-700);
+  --tw-prose-bullets: var(--color-brand-500);
+  --tw-prose-counters: var(--color-brand-500);
+  --tw-prose-quotes: var(--color-ink);
+  --tw-prose-quote-borders: var(--color-brand-700);
+  --tw-prose-captions: #6b6b6b;
+}
+
+/* Sobre el fondo de color de una sección, el contenido pasa a claro.
+   Dos clases (.section-accent .prose-brand) pesan más que una sola, así que
+   estos valores ganan a los de arriba sin depender del orden del CSS. */
+.section-accent .prose-brand {
+  --tw-prose-body: var(--color-brand-50);
+  --tw-prose-headings: #ffffff;
+  --tw-prose-bold: #ffffff;
+  --tw-prose-links: #ffffff;
+  --tw-prose-bullets: var(--color-brand-200);
+  --tw-prose-counters: var(--color-brand-200);
+  --tw-prose-quotes: #ffffff;
+  --tw-prose-quote-borders: var(--color-brand-200);
+  --tw-prose-captions: var(--color-brand-200);
+}
+
+/* El primer bloque no debe empujar hacia abajo (app-blocks envuelve a los bloques) */
+.prose app-blocks > :first-child { margin-top: 0; }
+.prose app-blocks > :last-child { margin-bottom: 0; }
+
+/* ── Piezas reutilizables del panel ── */
+@utility btn {
+  @apply inline-flex items-center gap-1 rounded-md border border-slate-300 bg-white px-2.5 py-1 text-sm text-slate-700 hover:bg-slate-50 disabled:opacity-50;
+}
+@utility btn-primary {
+  @apply inline-flex items-center rounded-md bg-slate-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-slate-700 disabled:opacity-50;
+}
+@utility icon-btn {
+  @apply rounded px-1.5 py-0.5 text-slate-500 hover:bg-slate-200 hover:text-slate-900;
+}
+@utility field {
+  @apply w-full rounded-md border border-slate-300 bg-white px-2 py-1.5 text-sm focus:border-sky-500 focus:ring-2 focus:ring-sky-200 focus:outline-none;
+}
+
+/* ── Arrastrar y soltar (Angular CDK) ──
+   El CDK mueve los elementos, pero el aspecto mientras arrastras lo decides tú */
+.cdk-drag-preview { border-radius: 0.5rem; box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.25); opacity: 0.95; }
+.cdk-drag-placeholder { opacity: 0.35; }
+.cdk-drag-animating { transition: transform 200ms cubic-bezier(0, 0, 0.2, 1); }
+.cdk-drop-list-dragging .cdk-drag:not(.cdk-drag-placeholder) { transition: transform 200ms cubic-bezier(0, 0, 0.2, 1); }

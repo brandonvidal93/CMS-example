@@ -1,29 +1,22 @@
-// sections-view.ts — Pinta las secciones de una página (versión Angular de render-page.js)
-//
-// Igual que antes, aquí se traduce la INTENCIÓN guardada ("1/3+2/3") a una
-// clase CSS, y el tema (styles/theme.css) decide qué significa visualmente.
-
+// sections-view.ts — Pinta las secciones de una página
 import { Component, input } from '@angular/core';
 import { BlockList } from './block-list';
-import type { Layout, Section } from './types';
-
-const LAYOUT_CLASS: Record<Layout, string> = {
-  '1': 'layout-1',
-  '1/2+1/2': 'layout-half-half',
-  '1/3+2/3': 'layout-third-twothirds',
-  '2/3+1/3': 'layout-twothirds-third',
-  '1/3+1/3+1/3': 'layout-thirds',
-};
+import { BACKGROUND_CLASS, LAYOUT_CLASS } from './styles-map';
+import type { Section } from './types';
 
 @Component({
   selector: 'app-sections',
   imports: [BlockList],
+  host: { class: 'block' },
   template: `
     @for (s of sections(); track s.id) {
-      <section class="section" [class]="'bg-' + s.background" [id]="'s-' + s.id">
-        <div class="section-inner" [class]="layoutClass(s.layout)">
+      <!-- El fondo ocupa todo el ancho; el contenido se centra dentro -->
+      <section class="py-8 md:py-12" [class]="backgrounds[s.background]" [id]="'s-' + s.id">
+        <div class="mx-auto grid max-w-5xl grid-cols-1 gap-4 px-4 md:gap-8" [class]="layouts[s.layout]">
           @for (c of s.columns; track $index) {
-            <div class="column content"><app-blocks [blocks]="c.blocks" /></div>
+            <div class="prose prose-brand max-w-none min-w-0">
+              <app-blocks [blocks]="c.blocks" />
+            </div>
           }
         </div>
       </section>
@@ -32,5 +25,6 @@ const LAYOUT_CLASS: Record<Layout, string> = {
 })
 export class SectionsView {
   readonly sections = input.required<Section[]>();
-  layoutClass = (l: Layout) => LAYOUT_CLASS[l] ?? 'layout-1';
+  protected layouts = LAYOUT_CLASS;
+  protected backgrounds = BACKGROUND_CLASS;
 }

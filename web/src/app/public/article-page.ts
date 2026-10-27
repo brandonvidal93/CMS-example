@@ -15,10 +15,11 @@ import { sqlDate } from './sql-date';
   template: `
     @if (article.hasValue()) {
       @let a = article.value().data;
-      <main class="wrap">
-        <article class="content narrow">
+      <main class="mx-auto max-w-5xl px-4">
+        <!-- prose: Tailwind Typography da formato a todo el HTML de los bloques -->
+        <article class="prose prose-lg prose-brand max-w-2xl">
           <h1>{{ a.title }}</h1>
-          <p class="meta">Publicado el {{ sqlDate(a.published_at) | date: 'longDate' }}</p>
+          <p class="text-sm! text-neutral-500">Publicado el {{ sqlDate(a.published_at) | date: 'longDate' }}</p>
           <app-blocks [blocks]="a.content.blocks" />
         </article>
       </main>

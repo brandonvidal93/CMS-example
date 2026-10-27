@@ -151,6 +151,17 @@ export const pageToDoc = (sections: SectionVM[]): PageDoc => ({
 // Así la señal "sabe" que cambió.
 export const insertAt = <T>(arr: T[], i: number, item: T) => [...arr.slice(0, i), item, ...arr.slice(i)];
 export const removeAt = <T>(arr: T[], i: number) => arr.filter((_, j) => j !== i);
+// Mover de la posición "from" a la posición "to" (lo que necesita el arrastrar y soltar)
+export function moveItem<T>(arr: T[], from: number, to: number): T[] {
+  const copy = [...arr];
+  const [item] = copy.splice(from, 1);
+  copy.splice(to, 0, item);
+  return copy;
+}
+
+export const isBlockVM = (x: unknown): x is BlockVM =>
+  !!x && typeof x === 'object' && 'type' in x && 'id' in x;
+
 export function move<T>(arr: T[], i: number, delta: -1 | 1): T[] {
   const j = i + delta;
   if (j < 0 || j >= arr.length) return arr;

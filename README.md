@@ -3,6 +3,7 @@
 Un CMS pequeño para aprender cómo funcionan por dentro: el contenido se guarda como
 **bloques JSON** en SQLite, una **API en NestJS** lo valida y lo sirve, y una app
 **Angular con SSR** lo muestra al público y ofrece el panel de edición.
+Estilos con **Tailwind CSS 4** (+ `@tailwindcss/typography`) y arrastrar y soltar con **Angular CDK**.
 
 ```
 CMS-example/
@@ -55,11 +56,12 @@ Otros comandos:
 | `src/app/app.routes.ts` | URLs: `/`, `/blog/:slug`, `/:slug`, `/admin/...` |
 | `src/app/app.routes.server.ts` | Sitio público con SSR; panel solo en el navegador |
 | `src/app/content/` | Pintar bloques y secciones (`<app-blocks>`, `<app-sections>`) |
+| `src/app/content/styles-map.ts` | Intención guardada (`"1/3+2/3"`, `"accent"`) → clases de Tailwind |
 | `src/app/public/` | Portada, artículo, página, 404 |
 | `src/app/admin/editor/model.ts` | El documento convertido en **señales** (fuente de verdad del editor) |
 | `src/app/admin/editor/rich-text.ts` | El `contenteditable` ↔ spans |
-| `src/app/admin/editor/*-editor.ts` | Lista de bloques, acordeón y secciones/columnas |
-| `src/styles/theme.css` | El tema del sitio público |
+| `src/app/admin/editor/*-editor.ts` | Lista de bloques, acordeón y secciones/columnas (con arrastrar y soltar) |
+| `src/styles.css` | Tailwind: tokens de marca (`@theme`), `prose-brand` y utilidades del panel |
 | `src/server.ts` | Servidor de producción: proxy `/api` → Nest + SSR |
 
 `types.ts` existe en `api/` y en `web/` (son copias). Si cambias uno, cambia el otro.

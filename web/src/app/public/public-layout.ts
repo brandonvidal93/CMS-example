@@ -1,33 +1,33 @@
 // public-layout.ts — Cabecera + contenido + pie del sitio público
-// (el publicLayout() de views.js, ahora como componente)
-
 import { Component } from '@angular/core';
 import { httpResource } from '@angular/common/http';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import type { Envelope, NavItem } from '../core/api';
 
 @Component({
   selector: 'app-public-layout',
-  imports: [RouterOutlet, RouterLink],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  host: { class: 'block min-h-screen font-serif text-ink' },
   template: `
-    <header class="site-header">
-      <div class="wrap">
-        <a routerLink="/" class="brand">Mi Blog</a>
+    <header class="py-6">
+      <div class="mx-auto flex max-w-5xl flex-wrap items-baseline gap-x-6 gap-y-2 px-4">
+        <a routerLink="/" class="font-bold text-ink-soft no-underline">Mi Blog</a>
         @if (nav.hasValue()) {
-          <nav>
+          <nav class="flex flex-wrap gap-x-4 gap-y-1 text-[15px]">
             @for (p of nav.value().data; track p.slug) {
-              <a [routerLink]="['/', p.slug]">{{ p.title }}</a>
+              <a [routerLink]="['/', p.slug]" routerLinkActive="underline underline-offset-4"
+                 class="text-ink-soft no-underline hover:text-brand-700">{{ p.title }}</a>
             }
           </nav>
         }
       </div>
     </header>
     <router-outlet />
-    <footer class="site-footer"><div class="wrap">Hecho con Mini CMS · Angular + NestJS</div></footer>
+    <footer class="mt-12 py-6 text-[13px] text-neutral-500">
+      <div class="mx-auto max-w-5xl px-4">Hecho con Mini CMS · Angular + NestJS</div>
+    </footer>
   `,
 })
 export class PublicLayout {
-  // Las páginas publicadas para el menú. Como es una señal, la plantilla se
-  // actualiza sola cuando llegan los datos.
   protected nav = httpResource<Envelope<NavItem[]>>(() => '/api/nav');
 }

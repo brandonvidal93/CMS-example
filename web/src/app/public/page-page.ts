@@ -13,8 +13,8 @@ import { Seo } from '../core/seo';
   template: `
     @if (page.hasValue()) {
       @let p = page.value().data;
-      <main class="page">
-        <div class="wrap"><h1 class="page-title">{{ p.title }}</h1></div>
+      <main>
+        <div class="mx-auto max-w-5xl px-4"><h1 class="text-4xl font-bold">{{ p.title }}</h1></div>
         <app-sections [sections]="p.content.sections" />
       </main>
     } @else if (page.error()) {

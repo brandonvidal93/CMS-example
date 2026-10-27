@@ -18,7 +18,10 @@ import { EditorState } from './editor-state';
   selector: 'app-rich-text',
   template: '',
   host: {
-    class: 'rich',
+    // Tailwind quita a las listas sus viñetas (preflight). Como el HTML de aquí
+    // lo crea el navegador y no Angular, lo estilamos desde el contenedor con
+    // variantes arbitrarias: [&_ul]:list-disc = "a cualquier ul de dentro, list-disc".
+    class: 'rich block min-h-6 px-3 py-2 outline-none [&_a]:text-sky-700 [&_a]:underline [&_ol]:list-decimal [&_ol]:pl-6 [&_ul]:list-disc [&_ul]:pl-6',
     contenteditable: 'true',
     '(input)': 'onInput()',
     '(keydown)': 'onKeydown($event)',
